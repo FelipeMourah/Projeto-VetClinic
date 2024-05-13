@@ -1,12 +1,19 @@
 const express = require('express');
+const exphbs = require('express-handlebars').create();
 const app = express();
 const db = require('./db/connection');
+const bodyParser = require('body-parser')
+const association = require('./models/association')
+require('dotenv').config();
 
-const PORT = 3000;
 
-app.listen(PORT, function(){
-    console.log(`O express está rodando na porta ${PORT} `);
-})
+
+//handlebars
+app.engine('handlebars', exphbs.engine);
+app.set('view engine','handlebars');
+
+//bodyParser
+app.use(bodyParser.urlencoded({extended:false}));
 
 // db connections
 db
@@ -18,8 +25,21 @@ db
         console.log("Ocorreu um erro ao conectar")
     });
 
+    app.get('/',(req,res)=>{
+      res.end("Funcionou!")
+    })
 
-// routes
-app.get('/',(req, res) => {
-    res.send("ESTA FUNCIONANDO 2")
-})
+// Rotas de tutores
+app.use('/tutores', require ('./routes/tutores'))
+// Rotas de pets
+app.use('/pets', require('./routes/pets'))
+
+
+// server
+const PORT = process.env.PORT || 3000 ;
+app.listen(PORT, () => {
+  console.log(`Servidor está ouvindo na porta ${PORT}`);
+});
+ app.get('/', (req,res) =>{
+    res.end("Testando")
+ })
