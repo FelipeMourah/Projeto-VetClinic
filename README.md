@@ -16,6 +16,7 @@ Node.js v20.12.2
     "express-handlebars": "^7.1.2",
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7"
+
 ```
 ## Frameworks
 ```
@@ -99,3 +100,5 @@ PORT = 3000
      ```
      localhost:3000/clinic//pet/:petId/tutor/:tutorId
      ```
+    ***
+    END.
