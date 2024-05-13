@@ -1,31 +1,37 @@
-const Sequelize = require('sequelize')
+const {DataTypes, Model} = require('sequelize')
 const db = require('../db/connection')
-const tutores = require('./tutor')
+const Tutores = require('./tutor')
+class Pet extends Model{}
 
-const pet = db.define("pets",{
+Pet.init({
     id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    tutorId: {
-        type: Sequelize.INTEGER,
-    },
+    /*tutorId: {
+        type: DataTypes.INTEGER,
+    },*/
     name: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT
     },
     species: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT
     },
     carry: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT
     },
     weight: {
-        type: Sequelize.REAL
+        type: DataTypes.REAL
     },
     date_of_birth: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT
     },
-})
-
-module.exports = pet
+},{
+    sequelize: db,
+    modelName: 'Pet',
+    tableName: 'pets',
+    timestamps: false,
+    underscored: true,
+}) 
+module.exports = Pet

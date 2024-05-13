@@ -3,7 +3,9 @@ const exphbs = require('express-handlebars').create();
 const app = express();
 const db = require('./db/connection');
 const bodyParser = require('body-parser')
-const association = require('./models/association')
+const PORT = process.env.PORT || 3000 ;
+const tutoresRouter = require('./routes/tutores')
+const petsRouter = require('./routes/pets')
 require('dotenv').config();
 
 
@@ -15,31 +17,24 @@ app.set('view engine','handlebars');
 //bodyParser
 app.use(bodyParser.urlencoded({extended:false}));
 
-// db connections
-db
-    .authenticate()
-    .then(()=>{
-      console.log("Conectou ao banco com sucesso");   
-    })
-     .catch(err => {
-        console.log("Ocorreu um erro ao conectar")
-    });
 
-    app.get('/',(req,res)=>{
-      res.end("Funcionou!")
-    })
+
+
+
 
 // Rotas de tutores
-app.use('/tutores', require ('./routes/tutores'))
+
+app.use('/clinic', tutoresRouter)
+
 // Rotas de pets
-app.use('/pets', require('./routes/pets'))
+app.use('/clinic', petsRouter)
 
 
-// server
-const PORT = process.env.PORT || 3000 ;
-app.listen(PORT, () => {
-  console.log(`Servidor está ouvindo na porta ${PORT}`);
-});
- app.get('/', (req,res) =>{
-    res.end("Testando")
- })
+
+
+ db.sync().then(()=>{
+  console.log('conectado com sucesso!')
+  app.listen(PORT, () => {
+    console.log(`Servidor está ouvindo na porta ${PORT}`);
+  });
+})

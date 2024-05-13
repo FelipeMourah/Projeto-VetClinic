@@ -3,44 +3,46 @@ const router = express.Router()
 const Tutores = require('../models/tutor') // Renomeie para Tutor
 const Pet = require('../models/pet')
 
-router.get('/',(req,res)=>{
-  res.send('Está tudo ok!')
-})
-
 // POST
 //add new tutor
-router.post('/add', (req,res)=>{
+router.post('/tutor', async (req,res)=>{
 
-  let = {id, name, phone, email, date_of_birth, zip_code} = req.body;
+  try {
+    let {name, phone, email, date_of_birth, zip_code} = req.body;
 
 
-  Tutores.create({
-    id,
-    name,
-    phone,
-    email,
-    date_of_birth,
-    zip_code
-  })
-  .then(()=> res.redirect('/'))
-  .catch(err => console.log(err))
+      const tutores = await Tutores.create({
+        name,
+        phone,
+        email,
+        date_of_birth,
+        zip_code
+      })
+      res.status(201).json(tutores)
+      res.json(tutores)
+  } catch (error) {
+    res.status(400).json({error: error.message})
+  }
+
 })
 
 // GET
 //todos os tutores
-router.get('/tutors', (req, res) => {
-  Tutores.findAll()
-    .then(tutors => {
-      res.json(tutors); // Retorna todos os tutores como JSON
-    })
-    .catch(err => console.log(err));
+router.get('/tutors', async (req, res) => { 
+    try {
+      const tutores = await Tutores.findAll({include: [{ model: Pet, as: 'pets' }]})
+      res.status(200).json(tutores)
+     
+    } catch (error) {
+      res.status(400).json({error : error.message})
+    }
 });
 
 //tutor em com id
 router.get('/tutor/:id', (req, res) => {
   const tutorId = req.params.id;
 
-  Tutores.findOne({ where: { id:tutorId } })
+  Tutores.findOne({ where: { id:tutorId }, include: [{ model: Pet, as: 'pets' }]})
     .then(tutor => {
       if (!tutor) {
         return res.status(404).send('Tutor não existe');
@@ -61,7 +63,7 @@ router.put('/update/:id',(req,res)=>{
   Tutores.findByPk(tutorId)
     .then(tutor => {
       if (!tutor) {
-        return res.status(404).send('Tutor not found');
+        return res.status(404).send('Tutor não existe');
       }
 
       // Atualiza os campos do tutor com os novos valores

@@ -1,28 +1,40 @@
-const Sequelize = require("sequelize");
+const {DataTypes,Model} = require("sequelize");
 const db = require("../db/connection");
-const pet = require('./pet');
+const Pet = require('./pet');
 
-const Tutores = db.define("tutores", {
+class Tutores extends Model{}
+
+Tutores.init({
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
   name: {
-    type: Sequelize.TEXT,
+    type: DataTypes.TEXT,
   },
   phone: {
-     type: Sequelize.TEXT 
+     type: DataTypes.TEXT 
     },
   email: {
-     type: Sequelize.TEXT 
+     type: DataTypes.TEXT 
     },
   date_of_birth: { 
-    type: Sequelize.TEXT  // Armazenando como texto(para definir DD-MM-AAAA)
+    type: DataTypes.TEXT  // Armazenando como texto(para definir DD-MM-AAAA)
 },
   zip_code: { 
-    type: Sequelize.TEXT
+    type: DataTypes.TEXT
  },
  
-});
+},{
+  sequelize: db,
+  modelName: 'Tutores',
+  tableName: 'Tutores',
+  timestamps: false,
+  underscored: true,
+}
+);
+
+
+Tutores.hasMany(Pet, { foreignKey: "tutorId", as: 'pets' }); // Um tutor pode ter muitos pets
 module.exports = Tutores;
